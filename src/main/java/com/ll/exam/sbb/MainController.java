@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class MainController {
+    private int count = 0;
 
     @RequestMapping("/sbb")
     @ResponseBody
@@ -39,5 +40,23 @@ public class MainController {
                 <h1>입력된 나이 : %d</h1>
                 <h1>안녕하세요, GET 방식 접근</h1>
                 """.formatted(age);
+    }
+
+    @GetMapping("/plus")
+    @ResponseBody
+    public int showPlus(@RequestParam(defaultValue = "0") int a, @RequestParam(defaultValue = "0") int b) {
+        return a+b;
+    }
+
+    @GetMapping("/minus")
+    @ResponseBody
+    public int showMinus(@RequestParam(defaultValue = "0") int a, @RequestParam(defaultValue = "0") int b) {
+        return a-b;
+    }
+
+    @GetMapping("/increase")
+    @ResponseBody
+    public int showIncrease() {
+        return count++;
     }
 }
