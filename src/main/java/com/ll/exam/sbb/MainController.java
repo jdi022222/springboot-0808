@@ -5,6 +5,8 @@ import lombok.Getter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -109,19 +111,34 @@ public class MainController {
         return age;
     }
 
+    private List<Article> articles = new ArrayList<>();
+
     @GetMapping("/addArticle")
     @ResponseBody
     public String addArticle(String title, String body)
     {
         Article article = new Article(title, body);
+        articles.add(article);
         return "%번 게시물이 생성되었습니다.".formatted(article.getId());
+    }
+
+    @GetMapping("/article/{id}")
+    @ResponseBody
+    public Article getArticle(@PathVariable int id) {
+        Article article = articles
+                .stream()
+                .filter(a -> a.getId() == id) // 1번
+                .findFirst()
+                .get();
+
+        return article;
     }
 }
 
 @AllArgsConstructor
+@Getter
 class Article {
     private static int lastId = 0;
-    @Getter
     private final int id;
     private final String title;
     private final String body;
