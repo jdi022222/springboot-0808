@@ -121,8 +121,7 @@ public class MainController {
 
     @GetMapping("/addArticle")
     @ResponseBody
-    public String addArticle(String title, String body)
-    {
+    public String addArticle(String title, String body) {
         Article article = new Article(title, body);
         articles.add(article);
         return "%번 게시물이 생성되었습니다.".formatted(article.getId());
@@ -176,18 +175,41 @@ public class MainController {
 
         return "%d번 게시물을 삭제하였습니다.".formatted(article.getId());
     }
-}
 
-@AllArgsConstructor
-@Getter
-@Setter
-class Article {
-    private static int lastId = 0;
-    private int id;
-    private String title;
-    private String body;
 
-    public Article(String title, String body) {
-        this(++lastId, title, body);
+    @GetMapping("/addPersonOld")
+    @ResponseBody
+    public Person addPersonOld(int id, int age, String name) {
+        Person P = new Person(id, age, name);
+        return P;
+    }
+
+    @GetMapping("/addPerson")
+    @ResponseBody
+    public Person addPerson(Person p) {
+        return p;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    class Article {
+        private static int lastId = 0;
+        private int id;
+        private String title;
+        private String body;
+
+        public Article(String title, String body) {
+            this(++lastId, title, body);
+        }
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    class Person {
+        private int id;
+        private int age;
+        private String name;
     }
 }
