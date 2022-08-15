@@ -24,9 +24,7 @@ public class AnswerRepositoryTests {
     private void clearData() {
         QuestionRepositoryTests.clearData(questionRepository);
         questionRepository.disableForeignKeyChecks();
-        answerRepository.disableForeignKeyChecks();
-        answerRepository.truncate();
-        answerRepository.enableForeignKeyChecks();
+        answerRepository.truncateTable();
     }
 
     private void createSampleData() {
