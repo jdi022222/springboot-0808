@@ -23,4 +23,9 @@ public class Question {
     private LocalDateTime createDate;
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE) // 테스트가 아닌 실제 controller에서 쓸 때는 DB접속이 계속 이어짐 -> EAGER -> LAZY로 변경
     private List<Answer> answerList = new ArrayList<>();
+
+    public void addAnswer(Answer answer) {
+        answer.setQuestion(this);
+        getAnswerList().add(answer);
+    }
 }
