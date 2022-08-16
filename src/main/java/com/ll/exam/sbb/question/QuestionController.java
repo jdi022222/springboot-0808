@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-@Controller
+@Controller("/question")
 @RequiredArgsConstructor // 생성자 주입
 // 컨트롤러는 Repository가 있는지 몰라야 한다.
 // 서비스는 웹브라우저라는것이 이 세상에 존재하는지 몰라야 한다.
@@ -23,7 +23,7 @@ public class QuestionController {
     // @Autowired // 필드 주입
     private final QuestionService questionService;
 
-    @RequestMapping("/question/list")
+    @RequestMapping("/list")
     // 이 자리에 @ResponseBody가 없으면 resources/question_list/question_list.html 파일을 뷰로 삼는다.
     public String list(Model model) {
         List<Question> questionList = questionService.getList();
@@ -35,7 +35,7 @@ public class QuestionController {
         return "question_list";
     }
 
-    @RequestMapping("/question/detail/{id}")
+    @RequestMapping("/detail/{id}")
     public String detail(Model model, @PathVariable int id) {
         Question question = questionService.getQuestion(id);
 
