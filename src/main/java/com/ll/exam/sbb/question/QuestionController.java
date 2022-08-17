@@ -3,8 +3,10 @@ package com.ll.exam.sbb.question;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/question")
@@ -50,13 +52,23 @@ public class QuestionController {
     }
 
     @GetMapping("/create")
-    public String questionCreate() {
+    public String questionCreate(QuestionForm questionForm) {
         return "question_form";
     }
 
     @PostMapping("/create")
-    public String questionCreate(@RequestParam String subject, @RequestParam String content) {
-        this.questionService.create(subject, content);
+    public String questionCreate(Model model, QuestionForm questionForm) {
+        if (questionForm.getSubject() == null || questionForm.getSubject().trim().length() == 0) {
+            model.addAttribute("errorMsg", "제목을 입력하세요");
+            return "question_form";
+        }
+
+        if (questionForm.getContent() == null || questionForm.getContent().trim().length() == 0) {
+            model.addAttribute("errorMsg", "내용을 입력하세요");
+            return "question_form";
+        }
+
+        questionService.create(questionForm.getSubject(), questionForm.getContent());
         return "redirect:/question/list"; // 질문 저장후 질문목록으로 이동
     }
 }
