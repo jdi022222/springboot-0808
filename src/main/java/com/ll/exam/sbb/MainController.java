@@ -7,6 +7,10 @@ import lombok.Setter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,13 +19,17 @@ import java.util.stream.IntStream;
 
 @Controller
 public class MainController {
-    private int count = 0;
-    private int age = 0;
+    private int increaseNo = -1;
 
     @RequestMapping("/sbb")
+    // 아래 함수의 리턴값을 그대로 브라우저에 표시
+    // 아래 함수의 리턴값을 문자열화 해서 브라우저 응답의 바디에 담는다.
     @ResponseBody
     public String index() {
-        return "인덱스";
+        // 서버에서 출력
+        System.out.println("Hello");
+        // 먼 미래에 브라우저에서 보여짐
+        return "안녕하세요.";
     }
 
     @GetMapping("/page1")
@@ -40,7 +48,7 @@ public class MainController {
     public String showPage2Post(@RequestParam(defaultValue = "0") int age) {
         return """
                 <h1>입력된 나이 : %d</h1>
-                <h1>안녕하세요, POST 방식 접근</h1>
+                <h1>안녕하세요, POST 방식으로 오셨군요.</h1>
                 """.formatted(age);
     }
 
@@ -49,26 +57,29 @@ public class MainController {
     public String showPage2Get(@RequestParam(defaultValue = "0") int age) {
         return """
                 <h1>입력된 나이 : %d</h1>
-                <h1>안녕하세요, GET 방식 접근</h1>
+                <h1>안녕하세요, POST 방식으로 오셨군요.</h1>
                 """.formatted(age);
     }
 
     @GetMapping("/plus")
     @ResponseBody
-    public int showPlus(@RequestParam(defaultValue = "0") int a, @RequestParam(defaultValue = "0") int b) {
+    public int showPlus(int a, int b) {
         return a + b;
+    }
+
+    @GetMapping("/plus2")
+    @ResponseBody
+    public void showPlus2(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int a = Integer.parseInt(req.getParameter("a"));
+        int b = Integer.parseInt(req.getParameter("b"));
+
+        resp.getWriter().append(a + b + "");
     }
 
     @GetMapping("/minus")
     @ResponseBody
-    public int showMinus(@RequestParam(defaultValue = "0") int a, @RequestParam(defaultValue = "0") int b) {
+    public int showMinus(int a, int b) {
         return a - b;
-    }
-
-    @GetMapping("/increase")
-    @ResponseBody
-    public int showIncrease() {
-        return count++;
     }
 
     @GetMapping("/gugudan")
@@ -102,16 +113,22 @@ public class MainController {
         };
     }
 
-    @GetMapping("/saveSessionAge/{age}")
+    @GetMapping("/saveSession/{name}/{value}")
     @ResponseBody
-    public void saveSessionAge(@PathVariable int age) {
-        this.age = age;
+    public String saveSession(@PathVariable String name, @PathVariable String value, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+
+        session.setAttribute(name, value);
+
+        return "세션변수 %s의 값이 %s(으)로 설정되었습니다.".formatted(name, value);
     }
 
-    @GetMapping("/getSessionAge")
+    @GetMapping("/getSession/{name}")
     @ResponseBody
-    public int getSessionAge() {
-        return age;
+    public String getSession(@PathVariable String name, HttpSession session) {
+        String value = (String) session.getAttribute(name);
+
+        return "세션변수 %s의 값이 %s 입니다.".formatted(name, value);
     }
 
     private List<Article> articles = new ArrayList<>(
@@ -124,8 +141,10 @@ public class MainController {
     @ResponseBody
     public String addArticle(String title, String body) {
         Article article = new Article(title, body);
+
         articles.add(article);
-        return "%번 게시물이 생성되었습니다.".formatted(article.getId());
+
+        return "%d번 게시물이 생성되었습니다.".formatted(article.getId());
     }
 
     @GetMapping("/article/{id}")
@@ -177,17 +196,17 @@ public class MainController {
         return "%d번 게시물을 삭제하였습니다.".formatted(article.getId());
     }
 
-
-    @GetMapping("/addPersonOld")
+    @GetMapping("addPersonOldWay")
     @ResponseBody
-    public Person addPersonOld(int id, int age, String name) {
-        Person P = new Person(id, age, name);
-        return P;
+    Person addPersonOldWay(int id, int age, String name) {
+        Person p = new Person(id, age, name);
+
+        return p;
     }
 
     @GetMapping("/addPerson/{id}")
     @ResponseBody
-    public Person addPerson(Person p) {
+    Person addPerson(Person p) {
         return p;
     }
 
@@ -195,33 +214,33 @@ public class MainController {
     public String root() {
         return "redirect:/question/list";
     }
+}
 
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    class Article {
-        private static int lastId = 0;
-        private int id;
-        private String title;
-        private String body;
+@AllArgsConstructor
+@Getter
+@Setter
+class Article {
+    private static int lastId = 0;
+    private int id;
+    private String title;
+    private String body;
 
-        public Article(String title, String body) {
-            this(++lastId, title, body);
-        }
+    public Article(String title, String body) {
+        this(++lastId, title, body);
     }
+}
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Setter
-    class Person {
-        private int id;
-        private int age;
-        private String name;
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+class Person {
+    private int id;
+    private int age;
+    private String name;
 
-        public Person(int age, String name) {
-            this.age = age;
-            this.name = name;
-        }
+    public Person(int age, String name) {
+        this.age = age;
+        this.name = name;
     }
 }
