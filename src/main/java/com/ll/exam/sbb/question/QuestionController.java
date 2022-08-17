@@ -57,17 +57,9 @@ public class QuestionController {
     }
 
     @PostMapping("/create")
-    public String questionCreate(Model model, QuestionForm questionForm) {
-        boolean hasError = false;
-
-        if (questionForm.getSubject() == null || questionForm.getSubject().trim().length() == 0) {
-            model.addAttribute("subjectErrorMsg", "제목을 입력하세요");
-            hasError = true;
-        }
-
-        if (questionForm.getContent() == null || questionForm.getContent().trim().length() == 0) {
-            model.addAttribute("contentErrorMsg", "내용을 입력하세요");
-            hasError = true;
+    public String questionCreate(Model model, @Valid QuestionForm questionForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "question_form";
         }
 
         questionService.create(questionForm.getSubject(), questionForm.getContent());
