@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 
 @Controller
 public class MainController {
-    private int increaseNo = -1;
+    private final int increaseNo = -1;
 
     @RequestMapping("/sbb")
     // 아래 함수의 리턴값을 그대로 브라우저에 표시
@@ -131,7 +131,7 @@ public class MainController {
         return "세션변수 %s의 값이 %s 입니다.".formatted(name, value);
     }
 
-    private List<Article> articles = new ArrayList<>(
+    private final List<Article> articles = new ArrayList<>(
             Arrays.asList(
                     new Article("제목", "내용"),
                     new Article("제목", "내용"))
