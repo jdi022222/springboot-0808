@@ -5,9 +5,4 @@
      role="alert" th:if="${#fields.hasAnyErrors()}">
     <div th:each="err : ${#fields.allErrors()}" th:text="${err}"/>
 </div>
-
-<div th:fragment="formErrorsFragment2">
-    하하
-</div>
-
 </html>
