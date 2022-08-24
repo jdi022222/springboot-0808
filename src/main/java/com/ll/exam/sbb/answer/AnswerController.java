@@ -91,7 +91,7 @@ public class AnswerController {
 
         answerService.delete(answer);
 
-        return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
+        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -101,6 +101,6 @@ public class AnswerController {
         SiteUser siteUser = userService.getUser(principal.getName());
 
         answerService.vote(answer, siteUser);
-        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+        return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
     }
 }
