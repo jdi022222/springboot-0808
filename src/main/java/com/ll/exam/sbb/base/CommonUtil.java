@@ -1,9 +1,8 @@
-package com.ll.exam.sbb;
+package com.ll.exam.sbb.base;
 
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
